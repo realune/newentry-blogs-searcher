@@ -1,0 +1,4 @@
+/vendor
+/config/env.php
+/tmp/logs/
+composer.json
