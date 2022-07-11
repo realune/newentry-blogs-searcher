@@ -14,4 +14,15 @@ class DateUtil
 
         return $retDatetime;
     }
+
+    /**
+     * 過去の日時を取得する
+     * @param $days
+     * @return $retDatetime
+     */
+    public static function getBeforeDatetime($days) {
+        $retDatetime = date('Y-m-d H:i:s', strtotime("-$days day"));
+
+        return $retDatetime;
+    }
 }

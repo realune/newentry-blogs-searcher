@@ -4,15 +4,13 @@ require_once __DIR__ . '/../../database/DbConnect.php';
 
 class Model
 {
-    /**
-     * DBに接続する
-     * @return $pdo
-     */
-    protected function connect()
-    {
-        $db = new DbConnect();
-        $pdo = $db->connect();
+    protected $pdo;
 
-        return $pdo;
-    }
+    /**
+     * コンストラクタ 
+     */
+    protected function __construct() {
+        $db = new DbConnect();
+        $this->pdo = $db->connect();
+    } 
 }

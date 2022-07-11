@@ -1,5 +1,9 @@
 <?php
+/**
+ * RSSから新着ブログ情報を取得してデータを登録する
+ */
 
+require_once __DIR__ . '/../Constant.php';
 require_once __DIR__ . '/../app/entities/Fc2blogRssEntity.php';
 require_once __DIR__ . '/../app/functions/XmlUtil.php';
 require_once __DIR__ . '/../app/models/NewentryBlogsModel.php';
@@ -9,29 +13,26 @@ require 'vendor/autoload.php';
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-const DC = 'dc';
-
 // ログ初期化
 $log = new Logger('app');
 $log->pushHandler(new StreamHandler(__DIR__ . '/../tmp/logs/application.log', Logger::INFO));
 
 $log->info('FC2BLOG 新着記事RSS取得処理 開始');
-// 取得したいRSSのURLを設定
-$url = 'http://blog.fc2.com/newentry.rdf';
 
 try {
-    $rss = XmlUtil::readRss($url);
+    // RSSを読み込む
+    $rss = XmlUtil::readRss(Constant::FC2BLOG_NEWENTRY_RSS_URL);
 } catch (XmlReadException $e) {
     $log->error($e);
     $log->error("RSS取得URL: $url");
-    return;
+    exit("処理に失敗しました。\n");
 }
 
 $entityList = [];
 foreach ($rss->item as $item) {
     // simplexml_load_fileでは名前空間プレフィックス付きのタグが読み込めないため
     // 子ノードのタグを指定して読み込む
-    $dcNode = $item->children(DC, true);
+    $dcNode = $item->children(Constant::FC2BLOG_PREFIX_DC, true);
 
     $entity = new Fc2blogRssEntity(
         $item->link->__toString(),
@@ -51,6 +52,7 @@ try {
 } catch (PDOException $e) {
     // エラー時ログ出力
     $log->error($e);
+    exit("処理に失敗しました。\n");
 }
 
 $log->info('FC2BLOG 新着記事RSS取得処理 終了');
