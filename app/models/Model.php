@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../database/DbConnect.php';
-require_once __DIR__ . '/../../Constant.php';
+require_once __DIR__ . '/../Constant.php';
 
 class Model
 {

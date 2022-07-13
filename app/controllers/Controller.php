@@ -1,7 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../../Constant.php';
+require_once __DIR__ . '/../Constant.php';
+require_once __DIR__ . '/../functions/Pager.php';
 require './vendor/autoload.php';
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;

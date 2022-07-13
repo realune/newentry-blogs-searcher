@@ -3,7 +3,8 @@
  * RSSから新着ブログ情報を取得してデータを登録する
  */
 
-require_once __DIR__ . '/../Constant.php';
+require_once __DIR__ . '/../app/Constant.php';
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../app/entities/Fc2blogRssEntity.php';
 require_once __DIR__ . '/../app/functions/XmlUtil.php';
 require_once __DIR__ . '/../app/models/NewentryBlogsModel.php';
@@ -15,7 +16,7 @@ use Monolog\Logger;
 
 // ログ初期化
 $log = new Logger('app');
-$log->pushHandler(new StreamHandler(__DIR__ . '/../tmp/logs/application.log', Logger::INFO));
+$log->pushHandler(new StreamHandler(__DIR__ . '/../tmp/logs/' . BATCH_LOG, Logger::INFO));
 
 $log->info('FC2BLOG 新着記事RSS取得処理 開始');
 
