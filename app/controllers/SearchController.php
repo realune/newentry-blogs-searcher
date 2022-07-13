@@ -51,6 +51,7 @@ class SearchController extends Controller
         $startDispNum = ($page * Constant::FC2BLOG_DISPLAY_CNT - Constant::FC2BLOG_DISPLAY_CNT);
 
         $entityList = [];
+        $resultCount = 0;
         $model = new NewentryBlogsModel();
         try {
             // DBからデータを取得する
