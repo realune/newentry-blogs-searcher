@@ -75,8 +75,9 @@ class SearchController extends Controller
             );
         } catch (PDOException $e) {
             $this->log->error($e);
-            // トップページを表示
-            header('Location: /');
+            // エラー画面を表示する
+            $this->smarty->display("error/500.tpl");
+            exit;
         }
 
         // assignメソッドを使ってテンプレートに渡す値を設定
