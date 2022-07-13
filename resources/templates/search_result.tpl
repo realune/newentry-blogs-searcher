@@ -13,7 +13,6 @@
                     <th class="th-row2">URL</th>
                     <th class="th-row3">タイトル</th>
                     <th class="th-row4">説明</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +21,7 @@
                     <tr>
                         <td class="td-row1">{$val->getEntryDate()}</td>
                         <td class="td-row2">
-                            <a href="{$val->getLink()}">{$val->getLink()}</a>
+                            <a href="{$val->getLink()}" target="_blank" rel="noopener noreferrer">{$val->getLink()}</a>
                         </td>
                         <td class="td-row3">{$val->getTitle()}</td>
                         <td class="td-row4">{$val->getDescription()}</td>
@@ -30,6 +29,7 @@
                 {/foreach}
             </tbody>
         </table>
+        {include file="./pager.tpl"}
     {else}
         <h2 class="no-data">検索データなし</h2>
     {/if}

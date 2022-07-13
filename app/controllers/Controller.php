@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../Constant.php';
 require './vendor/autoload.php';
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -19,8 +20,8 @@ class Controller
     protected function __construct()
     {
         // ログ初期化
-        $log = new Logger('app');
-        $log->pushHandler(new StreamHandler(__DIR__ . '/../../tmp/logs/' . APP_LOG, Logger::WARNING));
+        $this->log = new Logger('app');
+        $this->log->pushHandler(new StreamHandler(__DIR__ . '/../../tmp/logs/' . APP_LOG, Logger::WARNING));
 
         // Smartyのインスタンスを生成
         $this->smarty = new Smarty();

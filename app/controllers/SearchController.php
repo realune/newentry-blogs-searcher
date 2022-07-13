@@ -1,6 +1,8 @@
 <?php
 
 require_once 'Controller.php';
+require_once __DIR__ . '/../functions/Pager.php';
+require_once __DIR__ . '/../functions/ServiceUtil.php';
 require_once __DIR__ . '/../models/NewentryBlogsModel.php';
 
 /**
@@ -23,6 +25,9 @@ class SearchController extends Controller
      */
     public function search($request)
     {
+        // Cookieに検索条件を保存
+        setcookie('search_cond', json_encode($request), time() + (365 * 24 * 60 * 60));
+
         // 検索対象を取得する
         $searchTargetList = $this->getTargetList($request);
 
@@ -32,9 +37,7 @@ class SearchController extends Controller
         $username  = ($searchTargetList['username']) ? $request['username'] : '';
         $serverNo  = ($searchTargetList['server_no']) ? $request['server_no'] : '';
         $entryNo   = ($searchTargetList['entry_no']) ? $request['entry_no'] : '';
-
-        // Cookieに検索条件を保存
-        $this->setCookie($entryDate, $link, $username, $serverNo, $entryNo, $searchTargetList['entry_no_over']);
+        $page      = ($searchTargetList['page']) ? $request['page'] : 1;
 
         // エスケープ処理(XSS対策)
         $entryDate = htmlspecialchars($entryDate, ENT_QUOTES);
@@ -42,7 +45,12 @@ class SearchController extends Controller
         $username  = htmlspecialchars($username, ENT_QUOTES);
         $serverNo  = htmlspecialchars($serverNo, ENT_QUOTES);
         $entryNo   = htmlspecialchars($entryNo, ENT_QUOTES);
+        $page      = htmlspecialchars($page, ENT_QUOTES);
 
+        // ページ番号に対する表示するデータの始点を計算
+        $startDispNum = ($page * Constant::FC2BLOG_DISPLAY_CNT - Constant::FC2BLOG_DISPLAY_CNT);
+
+        $entityList = [];
         $model = new NewentryBlogsModel();
         try {
             // DBからデータを取得する
@@ -52,16 +60,31 @@ class SearchController extends Controller
                 $username,
                 $serverNo,
                 $entryNo,
+                $startDispNum,
+                $searchTargetList
+            );
+
+            // 検索結果の件数を取得
+            $resultCount = $model->getCount(
+                $entryDate,
+                $link,
+                $username,
+                $serverNo,
+                $entryNo,
                 $searchTargetList
             );
         } catch (PDOException $e) {
             $this->log->error($e);
-            // テンプレートを表示する
-            $this->smarty->display("top.tpl");
+            // トップページを表示
+            header('Location: /');
         }
 
         // assignメソッドを使ってテンプレートに渡す値を設定
         $this->smarty->assign("results", $entityList);
+
+        // ページネーションを設定する
+        $pager = new Pager();
+        $pager->setPages($this->smarty, $resultCount, $page);
 
         // テンプレートを表示する
         $this->smarty->display("search_result.tpl");
@@ -74,37 +97,16 @@ class SearchController extends Controller
      */
     private function getTargetList($request) {
         $searchTargetList = [];
+
         // 検索対象を判定して配列に格納
-        $searchTargetList['entry_date']    = (isset($request['entry_date']) && !empty($request['entry_date']));
-        $searchTargetList['link']          = (isset($request['link']) && !empty($request['link']));
-        $searchTargetList['username']      = (isset($request['username']) && !empty($request['username']));
-        $searchTargetList['server_no']     = (isset($request['server_no']) && !empty($request['server_no']));
-        $searchTargetList['entry_no']      = (isset($request['entry_no']) && !empty($request['entry_no']));
-        $searchTargetList['entry_no_over'] = (isset($request['entry_no_over']) && !empty($request['entry_no_over']));
+        $searchTargetList['entry_date']    = (isset($request['entry_date']) && !is_empty($request['entry_date']));
+        $searchTargetList['link']          = (isset($request['link']) && !is_empty($request['link']));
+        $searchTargetList['username']      = (isset($request['username']) && !is_empty($request['username']));
+        $searchTargetList['server_no']     = (isset($request['server_no']) && !is_empty($request['server_no']) && is_numeric($request['server_no']));
+        $searchTargetList['entry_no']      = (isset($request['entry_no']) && !is_empty($request['entry_no']) && is_numeric($request['entry_no']));
+        $searchTargetList['entry_no_over'] = (isset($request['entry_no_over']) && !is_empty($request['entry_no_over']));
+        $searchTargetList['page']          = (isset($request['page']) && !is_empty($request['page']) && is_numeric($request['page']));
 
         return $searchTargetList;
-    }
-
-    /**
-     * Cookieに検索条件を保存する
-     * @param $entryDate
-     * @param $link
-     * @param $username
-     * @param $serverNo
-     * @param $entryNo
-     * @param $isEntryNoOver
-     * @return void
-     */
-    private function setCookie($entryDate, $link, $username, $serverNo, $entryNo, $isEntryNoOver) {
-        // クッキーに検索条件を保存
-        $searchCond = [
-            'entry_date'    => $entryDate,
-            'link'          => $link,
-            'username'      => $username,
-            'server_no'      => $serverNo,
-            'entry_no'       => $entryNo,
-            'entry_no_over' => $isEntryNoOver
-        ];
-        setcookie('search_cond', json_encode($searchCond), time() + (365 * 24 * 60 * 60));
     }
 }
