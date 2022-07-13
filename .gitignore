@@ -1,4 +1,4 @@
 /vendor
-/config/env.php
+/config/.env.php
 /tmp/logs/
 composer.json
