@@ -161,10 +161,14 @@ class NewentryBlogsModel extends Model
     {
         // 定数を展開するための無名関数
         $_ = function ($s) {return $s;};
+
         // プリペアドステートメントを用意
+        // ユーザー名、エントリー番号、投稿日で重複レコードを判定し、重複の場合は挿入しない
         $stmt = $this->pdo->prepare(
             "INSERT INTO {$_(TABLE_NAME)} (link, title, description, username, server_no, entry_no, entry_date) "
-            . 'VALUES (:link, :title, :description, :username, :server_no, :entry_no, :entry_date)'
+            . "SELECT :link, :title, :description, :username, :server_no, :entry_no, :entry_date "
+            . "WHERE NOT EXISTS (SELECT * FROM {$_(TABLE_NAME)} "
+            . "WHERE username = :username_sub AND entry_no = :entry_no_sub AND entry_date = :entry_date_sub)"
         );
 
         $counter = 0;
@@ -181,7 +185,10 @@ class NewentryBlogsModel extends Model
                     'username' => $entity->getUsername(),
                     'server_no' => $entity->getServerNo(),
                     'entry_no' => $entity->getEntryNo(),
-                    'entry_date' => $entryDate
+                    'entry_date' => $entryDate,
+                    'username_sub' => $entity->getUsername(),
+                    'entry_no_sub' => $entity->getEntryNo(),
+                    'entry_date_sub' => $entryDate
                 ]);
 
                 // コミット件数に達した場合コミットする
