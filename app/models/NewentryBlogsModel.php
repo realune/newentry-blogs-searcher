@@ -81,18 +81,17 @@ class NewentryBlogsModel extends Model
         // 取得したデータをEntityに格納する
         foreach ($stmt->fetchAll() as $row) {
             $entity = new Fc2blogRssEntity(
+                $row['id'],
                 $row['link'],
                 $row['title'],
                 $row['description'],
+                $row['username'],
+                $row['server_no'],
+                $row['entry_no'],
                 $row['entry_date'],
-                false
+                $row['created_at'],
+                $row['updated_at']
             );
-            $entity->setId($row['id']);
-            $entity->setUsername($row['username']);
-            $entity->setServerNo($row['server_no']);
-            $entity->setEntryNo($row['entry_no']);
-            $entity->setCreatedAt($row['created_at']);
-            $entity->setUpdatedAt($row['updated_at']);
             array_push($retEntityList, $entity);
         }
 

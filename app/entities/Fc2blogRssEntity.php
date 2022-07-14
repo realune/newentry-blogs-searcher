@@ -5,36 +5,60 @@ require_once __DIR__ . '/../functions/Fc2blogParser.php';
 
 class Fc2blogRssEntity extends Entity
 {
-    private $link;
-    private $title;
-    private $description;
-    private $username;
-    private $serverNo;
-    private $entryNo;
-    private $entryDate;
-
     /**
-     * constructor
-     * URLをパースしたい場合は$parseにtrueを設定
+     * コンストラクタ
+     * @param $id
      * @param $link
      * @param $title
      * @param $description
+     * @param $username
+     * @param $serverNo
+     * @param $entryNo
      * @param $entryDate
-     * @param $parse
+     * @param $createdAt
+     * @param $updatedAt
      */
-    public function __construct($link, $title, $description, $entryDate, $parse = false)
-    {
+    public function __construct(
+        private $id,
+        private $link,
+        private $title,
+        private $description,
+        private $username,
+        private $serverNo,
+        private $entryNo,
+        private $entryDate,
+        private $createdAt,
+        private $updatedAt
+    ) {
+        $this->setId($id);
         $this->setLink($link);
         $this->setTitle($title);
         $this->setDescription($description);
-        $this->setentryDate($entryDate);
-        if ($parse) {
-            // URLをパースしてユーザー名、サーバー番号、エントリーNoを取得
-            $parsedArr = Fc2blogParser::parseUrl($this->link);
-            $this->setUsername($parsedArr['username']);
-            $this->setServerNo($parsedArr['serverNo']);
-            $this->setEntryNo($parsedArr['entryNo']);
-        }
+        $this->setUsername($username);
+        $this->setServerNo($serverNo);
+        $this->setEntryNo($entryNo);
+        $this->setEntryDate($entryDate);
+        $this->setCreatedAt($createdAt);
+        $this->setUpdatedAt($updatedAt);
+    }
+
+    /**
+     * IDを取得する
+     * @return $id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * IDを設定する
+     * @param $id
+     * @return void
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -152,7 +176,7 @@ class Fc2blogRssEntity extends Entity
     }
 
     /**
-     * entryDateを取得する
+     * エントリー日時を取得する
      * @return $entryDate
      */
     public function getEntryDate()
@@ -161,12 +185,63 @@ class Fc2blogRssEntity extends Entity
     }
 
     /**
-     * entryDateを設定する
+     * エントリー日時を設定する
      * @param $entryDate
      * @return void
      */
     public function setEntryDate($entryDate)
     {
         $this->entryDate = $entryDate;
+    }
+
+    /**
+     * 登録日時を取得する
+     * @return $createdAt
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * 登録日時を設定する
+     * @param $createdAt
+     * @return void
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * 更新日時を取得する
+     * @return $updatedAt
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * 更新日時を設定する
+     * @param $updatedAt
+     * @return void
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * URLパース処理
+     * @return void
+     */
+    public function parseUrl()
+    {
+        // URLをパースしてユーザー名、サーバー番号、エントリーNoを取得
+        $parsedArr = Fc2blogParser::parseUrl($this->link);
+        $this->setUsername($parsedArr['username']);
+        $this->setServerNo($parsedArr['serverNo']);
+        $this->setEntryNo($parsedArr['entryNo']);
     }
 }

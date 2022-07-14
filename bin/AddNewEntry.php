@@ -25,7 +25,7 @@ try {
     $rss = XmlUtil::readRss(Constant::FC2BLOG_NEWENTRY_RSS_URL);
 } catch (XmlReadException $e) {
     $log->error($e);
-    $log->error("RSS取得URL: $url");
+    $log->error("RSS取得URL: " . Constant::FC2BLOG_NEWENTRY_RSS_URL);
     exit("処理に失敗しました。\n");
 }
 
@@ -36,12 +36,19 @@ foreach ($rss->item as $item) {
     $dcNode = $item->children(Constant::FC2BLOG_PREFIX_DC, true);
 
     $entity = new Fc2blogRssEntity(
+        '',
         $item->link->__toString(),
         $item->title->__toString(),
         $item->description->__toString(),
+        '',
+        null,
+        '',
         $dcNode->date->__toString(),
-        true
+        '',
+        ''
     );
+    // URLをパースして値を設定
+    $entity->parseUrl();
 
     array_push($entityList, $entity);
 }
