@@ -20,7 +20,16 @@ switch ($requestUrl) {
 
     default:
         http_response_code(404);
-// TODO
-//        require __DIR__ . 'template/404.tpl';
+
+        require_once 'config/config.php';
+        require './vendor/autoload.php';
+        // Smartyのインスタンスを生成
+        $smarty = new Smarty();
+        // テンプレートディレクトリとコンパイルディレクトリを読み込む
+        $smarty->template_dir = TEMPLATE_DIR;
+        $smarty->compile_dir = TEMPLATE_C_DIR;
+        // テンプレートを表示する
+        $smarty->display("error/404.tpl");
+
         break;
 }

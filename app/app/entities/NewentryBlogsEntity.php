@@ -3,7 +3,10 @@
 require_once 'Entity.php';
 require_once __DIR__ . '/../functions/Fc2blogParser.php';
 
-class Fc2blogRssEntity extends Entity
+/**
+ * FC2新着ブログエンティティ
+ */
+class NewentryBlogsEntity extends Entity
 {
     /**
      * コンストラクタ

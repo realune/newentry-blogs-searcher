@@ -21,7 +21,7 @@ class Controller
     protected function __construct()
     {
         // ログ初期化
-        $this->log = new Logger('app');
+        $this->log = new Logger('Controller');
         $this->log->pushHandler(new StreamHandler(__DIR__ . '/../../tmp/logs/' . APP_LOG, Logger::WARNING));
 
         // Smartyのインスタンスを生成

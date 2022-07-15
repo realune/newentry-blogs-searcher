@@ -5,17 +5,17 @@
 
 require_once __DIR__ . '/../app/Constant.php';
 require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../app/entities/Fc2blogRssEntity.php';
+require_once __DIR__ . '/../app/entities/NewentryBlogsEntity.php';
 require_once __DIR__ . '/../app/functions/XmlUtil.php';
 require_once __DIR__ . '/../app/models/NewentryBlogsModel.php';
-require_once __DIR__ . ('/../app/exceptions/XmlReadException.php');
-require 'vendor/autoload.php';
+require_once __DIR__ . '/../app/exceptions/XmlReadException.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 // ログ初期化
-$log = new Logger('app');
+$log = new Logger('AddNewEntry');
 $log->pushHandler(new StreamHandler(__DIR__ . '/../tmp/logs/' . BATCH_LOG, Logger::INFO));
 
 $log->info('FC2BLOG 新着記事RSS取得処理 開始');
@@ -35,7 +35,7 @@ foreach ($rss->item as $item) {
     // 子ノードのタグを指定して読み込む
     $dcNode = $item->children(Constant::FC2BLOG_PREFIX_DC, true);
 
-    $entity = new Fc2blogRssEntity(
+    $entity = new NewentryBlogsEntity(
         '',
         $item->link->__toString(),
         $item->title->__toString(),

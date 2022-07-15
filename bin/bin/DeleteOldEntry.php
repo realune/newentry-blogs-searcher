@@ -6,14 +6,14 @@
 require_once __DIR__ . '/../app/Constant.php';
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../app/models/NewentryBlogsModel.php';
-require_once __DIR__ . ('/../app/exceptions/XmlReadException.php');
-require 'vendor/autoload.php';
+require_once __DIR__ . '/../app/exceptions/XmlReadException.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 // ログ初期化
-$log = new Logger('app');
+$log = new Logger('DeleteOldEntry');
 $log->pushHandler(new StreamHandler(__DIR__ . '/../tmp/logs/' . BATCH_LOG, Logger::INFO));
 
 $log->info('FC2BLOG 新着記事RSS削除処理 開始');

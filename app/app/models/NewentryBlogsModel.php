@@ -2,7 +2,7 @@
 
 require_once 'Model.php';
 require_once __DIR__ . '/../functions/DateUtil.php';
-require_once __DIR__ . '/../entities/Fc2blogRssEntity.php';
+require_once __DIR__ . '/../entities/NewentryBlogsEntity.php';
 
 const TABLE_NAME = 'newentry_blogs';
 
@@ -80,7 +80,7 @@ class NewentryBlogsModel extends Model
         }
         // 取得したデータをEntityに格納する
         foreach ($stmt->fetchAll() as $row) {
-            $entity = new Fc2blogRssEntity(
+            $entity = new NewentryBlogsEntity(
                 $row['id'],
                 $row['link'],
                 $row['title'],
