@@ -45,10 +45,16 @@ Your requirements could not be resolved to an installable set of packages.
 6. ログファイル格納ディレクトリを作成する  
 `$ mkdir -p tmp/logs`  
 <br>
-7. 環境設定ファイル名を変更する  
+7. DBを作成する  
+`$ mysql -u {ユーザ名} -p < database/migrations/createSchema.sql`  
+<br>
+8. テーブルを作成する  
+`$ mysql -u {ユーザ名} -p < createNewentryBlogsTable.sql`  
+<br>
+9. 環境設定ファイル名を変更する  
 `$ mv config/.env.example.php config/.env.php`  
 <br>
-8. MySQLの接続情報を記入する  
+10. MySQLの接続情報を記入する  
 `$ vi config/.env.php`  
 ```
 define('DB_HOST', '{環境に合わせて設定}');  
@@ -57,7 +63,7 @@ define('DB_USER', '{環境に合わせて設定}');
 define('DB_PASS', '{環境に合わせて設定}');  
 ```  
 <br>
-9. .htaccessを作成（または編集）する  
+11. .htaccessを作成（または編集）する  
 `$ vi .htaccess`  
 * 下記を入力して保存する  
 ```
@@ -75,11 +81,11 @@ deny from all
 </Files>
 ```  
 <br>
-10. バッチの権限を変更する  
+12. バッチの権限を変更する  
 `$ chmod 755 bin/AddNewEntry.php`  
 `$ chmod 755 bin/DeleteOldEntry.php`  
 <br>
-11. cronを設定する  
+13. cronを設定する  
 `crontab -e`  
 ```
 */5 * * * * /usr/bin/php8.0 /home/{環境に合わせて設定}/public_html/bin/AddNewEntry.php
